@@ -10,11 +10,11 @@ const historicalData = [
 // Main App Component
 const App = () => {
     // State variables
-    const [initialBalance, setInitialBalance] = useState(1000000);
-    const [socialSecurityIncome, setSocialSecurityIncome] = useState(50000);
+    const [initialBalance, setInitialBalance] = useState('1000000');
+    const [income, setIncome] = useState('50000');
     const [investmentOption, setInvestmentOption] = useState('tbill');
-    const [customReturnRate, setCustomReturnRate] = useState(5.0);
-    const [costs, setCosts] = useState([{ name: 'Living Expenses', value: 20000 }, { name: 'Nursing Home', value: 50000 }]);
+    const [customReturnRate, setCustomReturnRate] = useState('5.0');
+    const [costs, setCosts] = useState([{ name: 'Living Expenses', value: '20000' }, { name: 'Nursing Home', value: '50000' }]);
     const [simulationYears, setSimulationYears] = useState(40);
     const [chartData, setChartData] = useState([]);
     const [isSimulating, setIsSimulating] = useState(false);
@@ -23,12 +23,25 @@ const App = () => {
 
     const numSimulations = 1000;
 
+    const calculateTax = (income) => {
+        if (income <= 0) return 0;
+        let tax = 0;
+        if (income > 609350) tax += (income - 609350) * 0.37;
+        if (income > 243725) tax += (Math.min(income, 609350) - 243725) * 0.35;
+        if (income > 191950) tax += (Math.min(income, 243725) - 191950) * 0.32;
+        if (income > 100525) tax += (Math.min(income, 191950) - 100525) * 0.24;
+        if (income > 47150) tax += (Math.min(income, 100525) - 47150) * 0.22;
+        if (income > 11600) tax += (Math.min(income, 47150) - 11600) * 0.12;
+        if (income > 0) tax += Math.min(income, 11600) * 0.10;
+        return tax;
+    };
+
     // Handlers for cost inputs
-    const addCost = () => setCosts([...costs, { name: '', value: 0 }]);
+    const addCost = () => setCosts([...costs, { name: '', value: '' }]);
     const removeCost = (index) => setCosts(costs.filter((_, i) => i !== index));
     const updateCost = (index, field, value) => {
         const newCosts = [...costs];
-        newCosts[index][field] = field === 'value' ? parseFloat(value) || 0 : value;
+        newCosts[index][field] = value;
         setCosts(newCosts);
     };
 
@@ -37,7 +50,7 @@ const App = () => {
         setIsSimulating(true);
         setSimulationRan(true);
 
-        const totalInitialAnnualCost = costs.reduce((acc, cost) => acc + cost.value, 0);
+        const totalInitialAnnualCost = costs.reduce((acc, cost) => acc + (parseFloat(cost.value) || 0), 0);
         const allSimulationPaths = [];
         const maxStartIdx = historicalData.length - simulationYears;
 
@@ -45,7 +58,7 @@ const App = () => {
             const startIdx = Math.floor(Math.random() * maxStartIdx);
             const historicalWindow = historicalData.slice(startIdx, startIdx + simulationYears);
             
-            let currentBalance = initialBalance;
+            let currentBalance = parseFloat(initialBalance) || 0;
             const simulationPath = [{ year: 0, balance: currentBalance }];
 
             for (let year = 1; year <= simulationYears; year++) {
@@ -60,7 +73,7 @@ const App = () => {
                         annualReturn = 0.5 * historyYear.sp500 + 0.5 * historyYear.bond;
                         break;
                     case 'custom':
-                        annualReturn = customReturnRate / 100;
+                        annualReturn = (parseFloat(customReturnRate) || 0) / 100;
                         break;
                     default:
                         annualReturn = 0;
@@ -69,9 +82,12 @@ const App = () => {
                 
                 const gains = currentBalance * annualReturn;
                 const inflatedCost = totalInitialAnnualCost * Math.pow(1 + currentInflation, year);
-                const inflatedIncome = socialSecurityIncome * Math.pow(1 + currentInflation, year);
+                const inflatedIncome = (parseFloat(income) || 0) * Math.pow(1 + currentInflation, year);
                 
-                currentBalance += gains + inflatedIncome - inflatedCost;
+                const taxableIncome = inflatedIncome > inflatedCost ? inflatedIncome : inflatedCost;
+                const tax = calculateTax(taxableIncome);
+
+                currentBalance += gains + inflatedIncome - inflatedCost - tax;
                 simulationPath.push({ year, balance: currentBalance });
             }
             allSimulationPaths.push(simulationPath);
@@ -103,7 +119,7 @@ const App = () => {
 
         setChartData(processedChartData);
         setIsSimulating(false);
-    }, [initialBalance, socialSecurityIncome, investmentOption, costs, simulationYears, customReturnRate]);
+    }, [initialBalance, income, investmentOption, costs, simulationYears, customReturnRate]);
 
     const currencyFormatter = (value) => {
         if (value < 1000) return `$${value.toFixed(0)}`;
@@ -124,7 +140,15 @@ const App = () => {
             <div className="container mx-auto p-4 md:p-8">
                 <header className="text-center mb-8">
                     <h1 className="text-4xl md:text-5xl font-bold text-slate-900">Retirement Savings Planner</h1>
-                    <p className="text-lg text-slate-600 mt-2">Model your financial future using historical market data.</p>
+                    <p className="text-lg text-slate-600 mt-2">
+                        Model your financial future using historical market data. <br />
+                        <div className="text-left max-w-[60%] mx-auto mt-2">
+                            <b>T-bills</b> generally refers to the class of investments like treasure bills, CDs, and very safe but low-return investments. <br />
+                            <b>50/50</b> refers to a portfolio of 50% stocks and 50% bonds. <br />
+                            <b>Custom</b> refers to a custom return rate, if you believe you can hit a fixed return rate every year. <br />
+                            Only federal taxes are considered, and we're assuming everything is in taxable accounts. Taxable income is your income, plus any withdrawals from your savings to cover expenses.
+                        </div>
+                    </p>
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -136,14 +160,14 @@ const App = () => {
                             <label className="flex items-center text-lg font-medium text-slate-700 mb-2">
                                 <DollarSign className="w-5 h-5 mr-2 text-green-500" /> Initial Savings
                             </label>
-                            <input type="number" value={initialBalance} onChange={(e) => setInitialBalance(parseFloat(e.target.value) || 0)} className="w-full p-3 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500 focus:bg-white focus:ring focus:ring-indigo-200 transition" />
+                            <input type="number" value={initialBalance} onChange={(e) => setInitialBalance(e.target.value)} className="w-full p-3 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500 focus:bg-white focus:ring focus:ring-indigo-200 transition" />
                         </div>
 
                         <div className="mb-4">
                             <label className="flex items-center text-lg font-medium text-slate-700 mb-2">
-                                <DollarSign className="w-5 h-5 mr-2 text-blue-500" /> Annual Social Security
+                                <DollarSign className="w-5 h-5 mr-2 text-blue-500" /> Annual Income
                             </label>
-                            <input type="number" value={socialSecurityIncome} onChange={(e) => setSocialSecurityIncome(parseFloat(e.target.value) || 0)} className="w-full p-3 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500 focus:bg-white focus:ring focus:ring-indigo-200 transition" />
+                            <input type="number" value={income} onChange={(e) => setIncome(e.target.value)} className="w-full p-3 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500 focus:bg-white focus:ring focus:ring-indigo-200 transition" />
                         </div>
                         
                         <div className="mb-4">
@@ -162,7 +186,7 @@ const App = () => {
                                 <label className="flex items-center text-lg font-medium text-slate-700 mb-2">
                                     <Percent className="w-5 h-5 mr-2 text-orange-500" /> Custom Annual Return (%)
                                 </label>
-                                <input type="number" step="0.1" value={customReturnRate} onChange={(e) => setCustomReturnRate(parseFloat(e.target.value) || 0)} className="w-full p-3 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500 focus:bg-white" />
+                                <input type="number" step="0.1" value={customReturnRate} onChange={(e) => setCustomReturnRate(e.target.value)} className="w-full p-3 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500 focus:bg-white" />
                             </div>
                         )}
 
@@ -207,7 +231,7 @@ const App = () => {
                                             <YAxis 
                                                 domain={[1, 'auto']} 
                                                 tickFormatter={currencyFormatter} 
-                                                label={{ value: 'Account Balance', angle: -90, position: 'insideLeft', offset: -10 }} 
+                                                label={{ value: 'Account Balance', angle: -90, position: 'insideLeft', offset: 0 }} 
                                                 allowDataOverflow={true}
                                             />
                                             <Tooltip formatter={tooltipFormatter} />

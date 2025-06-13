@@ -1,21 +1,21 @@
 {
-  "name": "retirement",
+  "name": "retirement-calculator",
   "version": "1.0.0",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html",
+    "build": "parcel build src/index.html --public-url /retirement-calculator",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ebetica/retirement.git"
+    "url": "git+https://github.com/ebetica/retirement-calculator.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ebetica/retirement/issues"
+    "url": "https://github.com/ebetica/retirement-calculator/issues"
   },
   "homepage": "https://ebetica.github.io/retirement-calculator",
   "description": "",
