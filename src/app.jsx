@@ -146,7 +146,7 @@ const App = () => {
                             <b>T-bills</b> generally refers to the class of investments like treasure bills, CDs, and very safe but low-return investments. <br />
                             <b>50/50</b> refers to a portfolio of 50% stocks and 50% bonds. <br />
                             <b>Custom</b> refers to a custom return rate, if you believe you can hit a fixed return rate every year. <br />
-                            Only federal taxes are considered, and we're assuming everything is in taxable accounts. Taxable income is your income, plus any withdrawals from your savings to cover expenses.
+                            Only federal taxes are considered, and we're assuming everything is in taxable accounts. Taxable income is your income, plus any withdrawals from your savings to cover expenses. Annual income and costs are adjusted for inflation (typical case is social security).
                         </div>
                     </p>
                 </header>
