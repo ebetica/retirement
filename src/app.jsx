@@ -10,11 +10,11 @@ const historicalData = [
 // Main App Component
 const App = () => {
     // State variables
-    const [initialBalance, setInitialBalance] = useState(930000);
-    const [socialSecurityIncome, setSocialSecurityIncome] = useState(51800);
+    const [initialBalance, setInitialBalance] = useState(1000000);
+    const [socialSecurityIncome, setSocialSecurityIncome] = useState(50000);
     const [investmentOption, setInvestmentOption] = useState('tbill');
     const [customReturnRate, setCustomReturnRate] = useState(5.0);
-    const [costs, setCosts] = useState([{ name: 'Living Expenses', value: 20000 }, { name: 'Nursing Home', value: 48000 }]);
+    const [costs, setCosts] = useState([{ name: 'Living Expenses', value: 20000 }, { name: 'Nursing Home', value: 50000 }]);
     const [simulationYears, setSimulationYears] = useState(40);
     const [chartData, setChartData] = useState([]);
     const [isSimulating, setIsSimulating] = useState(false);

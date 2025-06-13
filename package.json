@@ -20,8 +20,12 @@
   "homepage": "https://ebetica.github.io/retirement-calculator",
   "description": "",
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.10",
+    "autoprefixer": "^10.4.21",
     "gh-pages": "^6.3.0",
-    "parcel": "^2.15.2"
+    "parcel": "^2.15.2",
+    "postcss": "^8.5.5",
+    "tailwindcss": "^4.1.10"
   },
   "dependencies": {
     "lucide-react": "^0.515.0",
