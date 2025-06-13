@@ -1,10 +1,11 @@
 {
   "name": "retirement",
   "version": "1.0.0",
-  "main": "index.js",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html"
+    "build": "parcel build src/index.html",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -23,11 +24,9 @@
     "parcel": "^2.15.2"
   },
   "dependencies": {
+    "lucide-react": "^0.515.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
-  },
-  "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "react-dom": "^19.1.0",
+    "recharts": "^2.15.3"
   }
 }
