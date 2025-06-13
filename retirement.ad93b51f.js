@@ -16801,18 +16801,18 @@ const historicalData = [
 const App = ()=>{
     _s();
     // State variables
-    const [initialBalance, setInitialBalance] = (0, _react.useState)(1000000);
-    const [socialSecurityIncome, setSocialSecurityIncome] = (0, _react.useState)(50000);
+    const [initialBalance, setInitialBalance] = (0, _react.useState)('1000000');
+    const [socialSecurityIncome, setSocialSecurityIncome] = (0, _react.useState)('50000');
     const [investmentOption, setInvestmentOption] = (0, _react.useState)('tbill');
-    const [customReturnRate, setCustomReturnRate] = (0, _react.useState)(5.0);
+    const [customReturnRate, setCustomReturnRate] = (0, _react.useState)('5.0');
     const [costs, setCosts] = (0, _react.useState)([
         {
             name: 'Living Expenses',
-            value: 20000
+            value: '20000'
         },
         {
             name: 'Nursing Home',
-            value: 50000
+            value: '50000'
         }
     ]);
     const [simulationYears, setSimulationYears] = (0, _react.useState)(40);
@@ -16830,7 +16830,7 @@ const App = ()=>{
             ...costs,
             {
                 name: '',
-                value: 0
+                value: ''
             }
         ]);
     const removeCost = (index)=>setCosts(costs.filter((_, i)=>i !== index));
@@ -16838,20 +16838,20 @@ const App = ()=>{
         const newCosts = [
             ...costs
         ];
-        newCosts[index][field] = field === 'value' ? parseFloat(value) || 0 : value;
+        newCosts[index][field] = value;
         setCosts(newCosts);
     };
     // Core simulation logic
     const runSimulation = (0, _react.useCallback)(()=>{
         setIsSimulating(true);
         setSimulationRan(true);
-        const totalInitialAnnualCost = costs.reduce((acc, cost)=>acc + cost.value, 0);
+        const totalInitialAnnualCost = costs.reduce((acc, cost)=>acc + (parseFloat(cost.value) || 0), 0);
         const allSimulationPaths = [];
         const maxStartIdx = historicalData.length - simulationYears;
         for(let i = 0; i < numSimulations; i++){
             const startIdx = Math.floor(Math.random() * maxStartIdx);
             const historicalWindow = historicalData.slice(startIdx, startIdx + simulationYears);
-            let currentBalance = initialBalance;
+            let currentBalance = parseFloat(initialBalance) || 0;
             const simulationPath = [
                 {
                     year: 0,
@@ -16869,7 +16869,7 @@ const App = ()=>{
                         annualReturn = 0.5 * historyYear.sp500 + 0.5 * historyYear.bond;
                         break;
                     case 'custom':
-                        annualReturn = customReturnRate / 100;
+                        annualReturn = (parseFloat(customReturnRate) || 0) / 100;
                         break;
                     default:
                         annualReturn = 0;
@@ -16877,7 +16877,7 @@ const App = ()=>{
                 const currentInflation = historyYear.inflation;
                 const gains = currentBalance * annualReturn;
                 const inflatedCost = totalInitialAnnualCost * Math.pow(1 + currentInflation, year);
-                const inflatedIncome = socialSecurityIncome * Math.pow(1 + currentInflation, year);
+                const inflatedIncome = (parseFloat(socialSecurityIncome) || 0) * Math.pow(1 + currentInflation, year);
                 currentBalance += gains + inflatedIncome - inflatedCost;
                 simulationPath.push({
                     year,
@@ -16948,8 +16948,33 @@ const App = ()=>{
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
                             className: "text-lg text-slate-600 mt-2",
-                            children: "Model your financial future using historical market data."
-                        }, void 0, false, {
+                            children: [
+                                "Model your financial future using historical market data. ",
+                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("br", {}, void 0, false, {
+                                    fileName: "src/app.jsx",
+                                    lineNumber: 128,
+                                    columnNumber: 83
+                                }, undefined),
+                                "T-bills generally refers to the class of investments like treasure bills, CDs, and very safe but low-return investments. ",
+                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("br", {}, void 0, false, {
+                                    fileName: "src/app.jsx",
+                                    lineNumber: 129,
+                                    columnNumber: 146
+                                }, undefined),
+                                "50/50 refers to a portfolio of 50% stocks and 50% bonds. ",
+                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("br", {}, void 0, false, {
+                                    fileName: "src/app.jsx",
+                                    lineNumber: 130,
+                                    columnNumber: 82
+                                }, undefined),
+                                "Custom refers to a custom return rate, if you believe you can hit a fixed return rate every year. ",
+                                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("br", {}, void 0, false, {
+                                    fileName: "src/app.jsx",
+                                    lineNumber: 131,
+                                    columnNumber: 123
+                                }, undefined)
+                            ]
+                        }, void 0, true, {
                             fileName: "src/app.jsx",
                             lineNumber: 127,
                             columnNumber: 21
@@ -16971,7 +16996,7 @@ const App = ()=>{
                                     children: "Plan Setup"
                                 }, void 0, false, {
                                     fileName: "src/app.jsx",
-                                    lineNumber: 133,
+                                    lineNumber: 138,
                                     columnNumber: 25
                                 }, undefined),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -16984,30 +17009,30 @@ const App = ()=>{
                                                     className: "w-5 h-5 mr-2 text-green-500"
                                                 }, void 0, false, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 137,
+                                                    lineNumber: 142,
                                                     columnNumber: 33
                                                 }, undefined),
                                                 " Initial Savings"
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 136,
+                                            lineNumber: 141,
                                             columnNumber: 29
                                         }, undefined),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
                                             type: "number",
                                             value: initialBalance,
-                                            onChange: (e)=>setInitialBalance(parseFloat(e.target.value) || 0),
+                                            onChange: (e)=>setInitialBalance(e.target.value),
                                             className: "w-full p-3 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500 focus:bg-white focus:ring focus:ring-indigo-200 transition"
                                         }, void 0, false, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 139,
+                                            lineNumber: 144,
                                             columnNumber: 29
                                         }, undefined)
                                     ]
                                 }, void 0, true, {
                                     fileName: "src/app.jsx",
-                                    lineNumber: 135,
+                                    lineNumber: 140,
                                     columnNumber: 25
                                 }, undefined),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17020,30 +17045,30 @@ const App = ()=>{
                                                     className: "w-5 h-5 mr-2 text-blue-500"
                                                 }, void 0, false, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 144,
+                                                    lineNumber: 149,
                                                     columnNumber: 33
                                                 }, undefined),
                                                 " Annual Social Security"
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 143,
+                                            lineNumber: 148,
                                             columnNumber: 29
                                         }, undefined),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
                                             type: "number",
                                             value: socialSecurityIncome,
-                                            onChange: (e)=>setSocialSecurityIncome(parseFloat(e.target.value) || 0),
+                                            onChange: (e)=>setSocialSecurityIncome(e.target.value),
                                             className: "w-full p-3 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500 focus:bg-white focus:ring focus:ring-indigo-200 transition"
                                         }, void 0, false, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 146,
+                                            lineNumber: 151,
                                             columnNumber: 29
                                         }, undefined)
                                     ]
                                 }, void 0, true, {
                                     fileName: "src/app.jsx",
-                                    lineNumber: 142,
+                                    lineNumber: 147,
                                     columnNumber: 25
                                 }, undefined),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17056,14 +17081,14 @@ const App = ()=>{
                                                     className: "w-5 h-5 mr-2 text-indigo-500"
                                                 }, void 0, false, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 151,
+                                                    lineNumber: 156,
                                                     columnNumber: 33
                                                 }, undefined),
                                                 " Investment Strategy"
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 150,
+                                            lineNumber: 155,
                                             columnNumber: 29
                                         }, undefined),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17077,14 +17102,14 @@ const App = ()=>{
                                                             className: "w-4 h-4 mx-auto mb-1"
                                                         }, void 0, false, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 154,
+                                                            lineNumber: 159,
                                                             columnNumber: 284
                                                         }, undefined),
                                                         " T-Bills"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 154,
+                                                    lineNumber: 159,
                                                     columnNumber: 33
                                                 }, undefined),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -17095,14 +17120,14 @@ const App = ()=>{
                                                             className: "w-4 h-4 mx-auto mb-1"
                                                         }, void 0, false, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 155,
+                                                            lineNumber: 160,
                                                             columnNumber: 290
                                                         }, undefined),
                                                         " 50/50"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 155,
+                                                    lineNumber: 160,
                                                     columnNumber: 33
                                                 }, undefined),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -17113,26 +17138,26 @@ const App = ()=>{
                                                             className: "w-4 h-4 mx-auto mb-1"
                                                         }, void 0, false, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 156,
+                                                            lineNumber: 161,
                                                             columnNumber: 286
                                                         }, undefined),
                                                         " Custom"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 156,
+                                                    lineNumber: 161,
                                                     columnNumber: 33
                                                 }, undefined)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 153,
+                                            lineNumber: 158,
                                             columnNumber: 29
                                         }, undefined)
                                     ]
                                 }, void 0, true, {
                                     fileName: "src/app.jsx",
-                                    lineNumber: 149,
+                                    lineNumber: 154,
                                     columnNumber: 25
                                 }, undefined),
                                 investmentOption === 'custom' && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17145,31 +17170,31 @@ const App = ()=>{
                                                     className: "w-5 h-5 mr-2 text-orange-500"
                                                 }, void 0, false, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 163,
+                                                    lineNumber: 168,
                                                     columnNumber: 37
                                                 }, undefined),
                                                 " Custom Annual Return (%)"
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 162,
+                                            lineNumber: 167,
                                             columnNumber: 33
                                         }, undefined),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
                                             type: "number",
                                             step: "0.1",
                                             value: customReturnRate,
-                                            onChange: (e)=>setCustomReturnRate(parseFloat(e.target.value) || 0),
+                                            onChange: (e)=>setCustomReturnRate(e.target.value),
                                             className: "w-full p-3 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500 focus:bg-white"
                                         }, void 0, false, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 165,
+                                            lineNumber: 170,
                                             columnNumber: 33
                                         }, undefined)
                                     ]
                                 }, void 0, true, {
                                     fileName: "src/app.jsx",
-                                    lineNumber: 161,
+                                    lineNumber: 166,
                                     columnNumber: 30
                                 }, undefined),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17182,14 +17207,14 @@ const App = ()=>{
                                                     className: "w-5 h-5 mr-2 text-red-500"
                                                 }, void 0, false, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 171,
+                                                    lineNumber: 176,
                                                     columnNumber: 33
                                                 }, undefined),
                                                 " Annual Costs"
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 170,
+                                            lineNumber: 175,
                                             columnNumber: 30
                                         }, undefined),
                                         costs.map((cost, index)=>/*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17203,7 +17228,7 @@ const App = ()=>{
                                                         className: "w-1/2 p-2 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500"
                                                     }, void 0, false, {
                                                         fileName: "src/app.jsx",
-                                                        lineNumber: 175,
+                                                        lineNumber: 180,
                                                         columnNumber: 37
                                                     }, undefined),
                                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -17214,7 +17239,7 @@ const App = ()=>{
                                                         className: "w-1/2 p-2 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500"
                                                     }, void 0, false, {
                                                         fileName: "src/app.jsx",
-                                                        lineNumber: 176,
+                                                        lineNumber: 181,
                                                         columnNumber: 37
                                                     }, undefined),
                                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -17224,18 +17249,18 @@ const App = ()=>{
                                                             className: "w-5 h-5"
                                                         }, void 0, false, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 177,
+                                                            lineNumber: 182,
                                                             columnNumber: 136
                                                         }, undefined)
                                                     }, void 0, false, {
                                                         fileName: "src/app.jsx",
-                                                        lineNumber: 177,
+                                                        lineNumber: 182,
                                                         columnNumber: 37
                                                     }, undefined)
                                                 ]
                                             }, index, true, {
                                                 fileName: "src/app.jsx",
-                                                lineNumber: 174,
+                                                lineNumber: 179,
                                                 columnNumber: 33
                                             }, undefined)),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -17246,20 +17271,20 @@ const App = ()=>{
                                                     className: "w-5 h-5 mr-1"
                                                 }, void 0, false, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 180,
+                                                    lineNumber: 185,
                                                     columnNumber: 151
                                                 }, undefined),
                                                 " Add Cost"
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 180,
+                                            lineNumber: 185,
                                             columnNumber: 29
                                         }, undefined)
                                     ]
                                 }, void 0, true, {
                                     fileName: "src/app.jsx",
-                                    lineNumber: 169,
+                                    lineNumber: 174,
                                     columnNumber: 25
                                 }, undefined),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17272,14 +17297,14 @@ const App = ()=>{
                                                     className: "w-5 h-5 mr-2 text-sky-500"
                                                 }, void 0, false, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 185,
+                                                    lineNumber: 190,
                                                     columnNumber: 33
                                                 }, undefined),
                                                 " Years to Simulate"
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 184,
+                                            lineNumber: 189,
                                             columnNumber: 29
                                         }, undefined),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
@@ -17289,13 +17314,13 @@ const App = ()=>{
                                             className: "w-full p-3 bg-slate-100 rounded-lg border-2 border-transparent focus:border-indigo-500"
                                         }, void 0, false, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 187,
+                                            lineNumber: 192,
                                             columnNumber: 29
                                         }, undefined)
                                     ]
                                 }, void 0, true, {
                                     fileName: "src/app.jsx",
-                                    lineNumber: 183,
+                                    lineNumber: 188,
                                     columnNumber: 25
                                 }, undefined),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -17307,7 +17332,7 @@ const App = ()=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "src/app.jsx",
-                                    lineNumber: 190,
+                                    lineNumber: 195,
                                     columnNumber: 25
                                 }, undefined),
                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
@@ -17317,13 +17342,13 @@ const App = ()=>{
                                     children: isSimulating ? 'Simulating...' : 'Run Simulation'
                                 }, void 0, false, {
                                     fileName: "src/app.jsx",
-                                    lineNumber: 192,
+                                    lineNumber: 197,
                                     columnNumber: 25
                                 }, undefined)
                             ]
                         }, void 0, true, {
                             fileName: "src/app.jsx",
-                            lineNumber: 132,
+                            lineNumber: 137,
                             columnNumber: 21
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17334,7 +17359,7 @@ const App = ()=>{
                                     children: "Projected Savings Over Time"
                                 }, void 0, false, {
                                     fileName: "src/app.jsx",
-                                    lineNumber: 199,
+                                    lineNumber: 204,
                                     columnNumber: 25
                                 }, undefined),
                                 simulationRan ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
@@ -17358,7 +17383,7 @@ const App = ()=>{
                                                             stroke: "#e0e0e0"
                                                         }, void 0, false, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 205,
+                                                            lineNumber: 210,
                                                             columnNumber: 45
                                                         }, undefined),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _recharts.XAxis), {
@@ -17370,7 +17395,7 @@ const App = ()=>{
                                                             }
                                                         }, void 0, false, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 206,
+                                                            lineNumber: 211,
                                                             columnNumber: 45
                                                         }, undefined),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _recharts.YAxis), {
@@ -17383,19 +17408,19 @@ const App = ()=>{
                                                                 value: 'Account Balance',
                                                                 angle: -90,
                                                                 position: 'insideLeft',
-                                                                offset: -10
+                                                                offset: 0
                                                             },
                                                             allowDataOverflow: true
                                                         }, void 0, false, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 207,
+                                                            lineNumber: 212,
                                                             columnNumber: 45
                                                         }, undefined),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _recharts.Tooltip), {
                                                             formatter: tooltipFormatter
                                                         }, void 0, false, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 213,
+                                                            lineNumber: 218,
                                                             columnNumber: 45
                                                         }, undefined),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _recharts.Legend), {
@@ -17403,7 +17428,7 @@ const App = ()=>{
                                                             height: 36
                                                         }, void 0, false, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 214,
+                                                            lineNumber: 219,
                                                             columnNumber: 45
                                                         }, undefined),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _recharts.Area), {
@@ -17416,7 +17441,7 @@ const App = ()=>{
                                                             strokeOpacity: 0.6
                                                         }, void 0, false, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 215,
+                                                            lineNumber: 220,
                                                             columnNumber: 45
                                                         }, undefined),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _recharts.Line), {
@@ -17431,23 +17456,23 @@ const App = ()=>{
                                                             }
                                                         }, void 0, false, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 216,
+                                                            lineNumber: 221,
                                                             columnNumber: 45
                                                         }, undefined)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 204,
+                                                    lineNumber: 209,
                                                     columnNumber: 41
                                                 }, undefined)
                                             }, void 0, false, {
                                                 fileName: "src/app.jsx",
-                                                lineNumber: 203,
+                                                lineNumber: 208,
                                                 columnNumber: 38
                                             }, undefined)
                                         }, void 0, false, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 202,
+                                            lineNumber: 207,
                                             columnNumber: 33
                                         }, undefined),
                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17462,7 +17487,7 @@ const App = ()=>{
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 221,
+                                                    lineNumber: 226,
                                                     columnNumber: 35
                                                 }, undefined),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -17474,7 +17499,7 @@ const App = ()=>{
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 222,
+                                                    lineNumber: 227,
                                                     columnNumber: 35
                                                 }, undefined),
                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17487,7 +17512,7 @@ const App = ()=>{
                                                                     children: "POOR OUTCOME (2.5%)"
                                                                 }, void 0, false, {
                                                                     fileName: "src/app.jsx",
-                                                                    lineNumber: 225,
+                                                                    lineNumber: 230,
                                                                     columnNumber: 43
                                                                 }, undefined),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -17495,13 +17520,13 @@ const App = ()=>{
                                                                     children: fullCurrencyFormatter(summary.p5)
                                                                 }, void 0, false, {
                                                                     fileName: "src/app.jsx",
-                                                                    lineNumber: 226,
+                                                                    lineNumber: 231,
                                                                     columnNumber: 43
                                                                 }, undefined)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 224,
+                                                            lineNumber: 229,
                                                             columnNumber: 39
                                                         }, undefined),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17511,7 +17536,7 @@ const App = ()=>{
                                                                     children: "MEDIAN OUTCOME (50%)"
                                                                 }, void 0, false, {
                                                                     fileName: "src/app.jsx",
-                                                                    lineNumber: 229,
+                                                                    lineNumber: 234,
                                                                     columnNumber: 43
                                                                 }, undefined),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -17519,13 +17544,13 @@ const App = ()=>{
                                                                     children: fullCurrencyFormatter(summary.median)
                                                                 }, void 0, false, {
                                                                     fileName: "src/app.jsx",
-                                                                    lineNumber: 230,
+                                                                    lineNumber: 235,
                                                                     columnNumber: 43
                                                                 }, undefined)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 228,
+                                                            lineNumber: 233,
                                                             columnNumber: 40
                                                         }, undefined),
                                                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -17535,7 +17560,7 @@ const App = ()=>{
                                                                     children: "GOOD OUTCOME (97.5%)"
                                                                 }, void 0, false, {
                                                                     fileName: "src/app.jsx",
-                                                                    lineNumber: 233,
+                                                                    lineNumber: 238,
                                                                     columnNumber: 43
                                                                 }, undefined),
                                                                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
@@ -17543,25 +17568,25 @@ const App = ()=>{
                                                                     children: fullCurrencyFormatter(summary.p95)
                                                                 }, void 0, false, {
                                                                     fileName: "src/app.jsx",
-                                                                    lineNumber: 234,
+                                                                    lineNumber: 239,
                                                                     columnNumber: 43
                                                                 }, undefined)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "src/app.jsx",
-                                                            lineNumber: 232,
+                                                            lineNumber: 237,
                                                             columnNumber: 40
                                                         }, undefined)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "src/app.jsx",
-                                                    lineNumber: 223,
+                                                    lineNumber: 228,
                                                     columnNumber: 35
                                                 }, undefined)
                                             ]
                                         }, void 0, true, {
                                             fileName: "src/app.jsx",
-                                            lineNumber: 220,
+                                            lineNumber: 225,
                                             columnNumber: 33
                                         }, undefined)
                                     ]
@@ -17572,24 +17597,24 @@ const App = ()=>{
                                         children: 'Set up your plan and click "Run Simulation" to see a range of potential outcomes.'
                                     }, void 0, false, {
                                         fileName: "src/app.jsx",
-                                        lineNumber: 241,
+                                        lineNumber: 246,
                                         columnNumber: 33
                                     }, undefined)
                                 }, void 0, false, {
                                     fileName: "src/app.jsx",
-                                    lineNumber: 240,
+                                    lineNumber: 245,
                                     columnNumber: 29
                                 }, undefined)
                             ]
                         }, void 0, true, {
                             fileName: "src/app.jsx",
-                            lineNumber: 198,
+                            lineNumber: 203,
                             columnNumber: 21
                         }, undefined)
                     ]
                 }, void 0, true, {
                     fileName: "src/app.jsx",
-                    lineNumber: 130,
+                    lineNumber: 135,
                     columnNumber: 17
                 }, undefined)
             ]
@@ -17604,7 +17629,7 @@ const App = ()=>{
         columnNumber: 9
     }, undefined);
 };
-_s(App, "KCjXmskdc0A9Hm0Qa8VdfE3ztMk=");
+_s(App, "3bQP3QOoLjSWb3BpgPOm4j/F4II=");
 _c = App;
 exports.default = App;
 var _c;
@@ -64729,6 +64754,6 @@ function $da9882e673ac146b$var$ErrorOverlay() {
     return null;
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"irmnC":[function() {},{}]},["hiyDA","gYcKb"], "gYcKb", "parcelRequiredc79", {}, null, null, "http://localhost:1234")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"jnFvT"}],"irmnC":[function() {},{}]},["hiyDA","gYcKb"], "gYcKb", "parcelRequire69fd", {}, null, null, "http://localhost:1234")
 
 //# sourceMappingURL=retirement.ad93b51f.js.map
